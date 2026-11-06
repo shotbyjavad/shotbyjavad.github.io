@@ -39,7 +39,21 @@ button.icon{background:none;border:0;color:var(--fg);font-size:18px;cursor:point
 /* grid (masonry via columns) */
 .grid{column-count:3;column-gap:var(--gap)}
 @media (max-width:900px){.grid{column-count:2}}
-@media (max-width:520px){.wrap{padding:0 16px}.grid{column-count:1}nav{gap:14px}.bar{gap:14px;flex-wrap:wrap;height:auto;padding:10px 16px}.search{order:5;width:100%}.search input,.search input:focus{width:100%}}
+.sicon{display:none;width:22px;height:22px;color:var(--fg);align-items:center;justify-content:center}
+.sicon svg{width:100%;height:100%;display:block}
+@media (max-width:700px){
+  /* compact header: row 1 = logo + icons (social, search, theme), row 2 = menu (scrolls sideways) */
+  .bar{flex-wrap:wrap;height:auto;padding:8px 16px 4px;gap:4px 16px}
+  .brand{order:1;margin-right:auto}
+  .social.head{order:2}
+  .sicon{order:3;display:inline-flex}
+  button.icon{order:4}
+  .search{display:none}
+  nav{order:5;flex:0 0 100%;gap:22px;overflow-x:auto;white-space:nowrap;scrollbar-width:none;padding:2px 0 6px}
+  nav::-webkit-scrollbar{display:none}
+  img.logo{height:26px}
+}
+@media (max-width:520px){.wrap{padding:0 16px}.grid{column-count:1}}
 .tile{display:block;position:relative;margin:0 0 var(--gap);break-inside:avoid;overflow:hidden;border-radius:3px}
 .tile img{width:100%;height:100%;object-fit:cover;transition:transform .5s ease}
 .tile:hover{opacity:1}.tile:hover img{transform:scale(1.03)}
@@ -81,13 +95,17 @@ dd a{border-bottom:1px solid var(--line)}
 .logo{display:inline-flex;height:26px;width:auto;color:var(--fg)}
 .logo svg{height:100%;width:auto;display:block}
 img.logo{display:block;height:30px;width:auto}
+/* one-image logo with dark text: in the dark theme flip it (white text, blue stays blue) */
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) img.logo-auto{filter:invert(1) hue-rotate(180deg)}}
+:root[data-theme="dark"] img.logo-auto{filter:invert(1) hue-rotate(180deg)}
+:root[data-theme="light"] img.logo-auto{filter:none}
 /* two-image logo: dark-text version on the light theme, light-text version on the dark theme */
 img.logo-d{display:none}
 @media (prefers-color-scheme:dark){
-  :root:not([data-theme="light"]) img.logo-l{display:none}
+  :root:not([data-theme="light"]) img.logo-l:not(.logo-auto){display:none}
   :root:not([data-theme="light"]) img.logo-d{display:block}
 }
-:root[data-theme="dark"] img.logo-l{display:none}
+:root[data-theme="dark"] img.logo-l:not(.logo-auto){display:none}
 :root[data-theme="dark"] img.logo-d{display:block}
 :root[data-theme="light"] img.logo-l{display:block}
 :root[data-theme="light"] img.logo-d{display:none}
