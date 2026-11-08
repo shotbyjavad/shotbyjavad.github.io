@@ -10,6 +10,12 @@ backend:
   branch: main
   base_url: https://shotbyjavad-cms-auth.shotbyjavad.workers.dev
   auth_endpoint: auth
+  commit_messages:
+    create: 'Admin: add {{collection}} "{{slug}}"'
+    update: 'Admin: edit {{collection}} "{{slug}}"'
+    delete: 'Admin: delete {{collection}} "{{slug}}"'
+    uploadMedia: 'Admin: upload "{{path}}"'
+    deleteMedia: 'Admin: delete "{{path}}"'
 
 site_url: https://shotbyjavad.github.io
 display_url: https://shotbyjavad.github.io
@@ -17,12 +23,6 @@ publish_mode: simple                     # Save = publish (no drafts/pull reques
 media_folder: uploads                    # original photos go to uploads/ in the repo
 public_folder: /uploads
 
-commit_messages:
-  create: 'Admin: add {{collection}} "{{slug}}"'
-  update: 'Admin: edit {{collection}} "{{slug}}"'
-  delete: 'Admin: delete {{collection}} "{{slug}}"'
-  uploadMedia: 'Admin: upload "{{path}}"'
-  deleteMedia: 'Admin: delete "{{path}}"'
 
 collections:
   # ------------------------------------------------------------------ photos
@@ -156,3 +156,7 @@ collections:
           - {label: "Share menu on each photo", name: share, widget: select, multiple: true, required: false, options: [x, facebook, whatsapp, telegram, linkedin, pinterest, reddit, email]}
           - {label: "Statistics: Cloudflare Web Analytics token", name: analytics_cloudflare, widget: string, required: false, hint: "From Cloudflare dashboard > Web Analytics. Empty = off."}
           - {label: "Statistics: GoatCounter code", name: analytics_goatcounter, widget: string, required: false, hint: "The first part of CODE.goatcounter.com. Empty = off."}
+          - {label: "Custom domain (optional)", name: custom_domain, widget: string, required: false, hint: "For example: example.com (no https://). Read the custom-domain guide before filling this."}
+          - {label: "Google Search Console verification code", name: google_verification, widget: string, required: false, hint: "Only the content value of the meta tag. Empty = off."}
+          - {label: "Bing Webmaster verification code", name: bing_verification, widget: string, required: false, hint: "Empty = off."}
+          - {label: "Yandex verification code", name: yandex_verification, widget: string, required: false, hint: "Empty = off."}

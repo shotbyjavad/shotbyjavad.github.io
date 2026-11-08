@@ -5,10 +5,90 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex">
 <title>Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
+<script>
+  // Light / dark: follows the device, and the round button (bottom corner) overrides it.
+  (function () {
+    var saved = null;
+    try { saved = localStorage.getItem('admin-theme'); } catch (e) {}
+    var dark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+    document.documentElement.classList.toggle('dk', dark);
+    window.__setTheme = function (d) {
+      document.documentElement.classList.toggle('dk', d);
+      try { localStorage.setItem('admin-theme', d ? 'dark' : 'light'); } catch (e) {}
+    };
+  })();
+</script>
 <style>
+  :root { --bg: #f3f5f9; --card: #ffffff; --line: #dfe3ec; --text: #1c2230; --muted: #667085; --accent: #2f6fed; --accent-soft: #e8f0ff; }
+  html { background: var(--bg); }
+  #nc-root, #nc-root input, #nc-root textarea, #nc-root button, #nc-root select {
+    font-family: "Inter", "Vazirmatn", system-ui, -apple-system, "Segoe UI", Tahoma, sans-serif;
+  }
   /* Persian and English text both look right: each field takes the direction of its first letter */
   input[type="text"], input:not([type]), textarea, [contenteditable] { unicode-bidi: plaintext; text-align: start; }
   textarea { line-height: 1.7; }
+
+  /* ---- layout and surfaces ---- */
+  [class*="AppMainContainer"] { background: var(--bg); }
+  [class*="ToolbarContainer"] { background: var(--card); border-bottom: 1px solid var(--line); box-shadow: none; }
+  [class*="AppHeaderContainer"], [class*="AppHeader-"], header[class*="AppHeader"] { background: var(--card); box-shadow: 0 1px 0 var(--line); }
+  [class*="SidebarContainer"] { background: var(--card); border: 1px solid var(--line); border-radius: 14px; box-shadow: none; }
+  [class*="ControlPaneContainer"] { background: var(--bg); }
+  [class*="ControlContainer"] { margin-bottom: 20px; }
+  [class*="ListCard"], [class*="GridCard"], [class*="CardsGrid"] > div, [class*="CollectionTopRow"] { border-radius: 14px; }
+  [class*="GridCard"], [class*="ListCard"] { background: var(--card); border: 1px solid var(--line); box-shadow: none; overflow: hidden; }
+  [class*="NoPreviewContainer"] { background: var(--card); border-radius: 14px; }
+
+  /* ---- labels and fields ---- */
+  [class*="FieldLabel"] {
+    background: transparent !important; color: var(--muted) !important; padding: 0 2px 6px !important;
+    font-size: 12px; font-weight: 600; text-transform: none; letter-spacing: .02em; border-radius: 0 !important;
+  }
+  [class*="ControlHint"] { color: var(--muted); font-size: 12.5px; line-height: 1.7; }
+  #nc-root input[type="text"], #nc-root input[type="number"], #nc-root input:not([type]), #nc-root textarea,
+  [class*="-control"] {
+    background: var(--card); color: var(--text); border: 1px solid var(--line) !important; border-radius: 10px !important;
+    box-shadow: none; padding-inline: 14px; transition: border-color .15s, box-shadow .15s;
+  }
+  #nc-root input:focus, #nc-root textarea:focus, [class*="-control"]:focus-within {
+    border-color: var(--accent) !important; box-shadow: 0 0 0 3px var(--accent-soft) !important; outline: none;
+  }
+
+  /* ---- buttons ---- */
+  [class*="PublishButton"], [class*="button-default"][class*="PublishButton"],
+  [class*="StyledDropdownButton"][class*="PublishButton"] {
+    background: var(--accent) !important; color: #fff !important; border-radius: 10px !important; font-weight: 600;
+  }
+  [class*="FileWidgetButton"], [class*="AddButton"], [class*="button-widget"] {
+    background: var(--accent-soft) !important; color: var(--accent) !important; border-radius: 8px !important; font-weight: 600;
+  }
+  [class*="ButtonRound"] { background: var(--card); border: 1px solid var(--line); box-shadow: none; }
+  [class*="BackStatus"] { border-radius: 999px; }
+
+  /* ---- phone: Decap forces an 800px minimum width; remove it ---- */
+  [class*="EditorContainer"], [class*="ToolbarContainer"], [class*="AppMainContainer"] { min-width: 0 !important; }
+  @media (max-width: 700px) {
+    [class*="AppHeaderSiteLink"], [class*="ToolbarSectionMeta"] [class*="SettingsWrapper"] { display: none; }
+    [class*="BackCollection"] { display: none; }
+    [class*="ToolbarSectionBackLink"] { padding-inline: 12px; }
+    [class*="ControlPaneContainer"] { padding-inline: 12px; }
+    [class*="CollectionTopRow"] { flex-wrap: wrap; gap: 8px; }
+  }
+
+  /* ---- light / dark button (bottom corner) ---- */
+  #theme-toggle {
+    position: fixed; inset-block-end: 16px; inset-inline-end: 16px; z-index: 9999;
+    width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--line); background: var(--card);
+    color: var(--text); font-size: 18px; line-height: 1; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,.15);
+  }
+
+  /* ---- dark mode: the whole admin is inverted, then pictures are flipped back ---- */
+  html.dk { filter: invert(.93) hue-rotate(180deg); background: #0f1218; }
+  html.dk img, html.dk video, html.dk iframe, html.dk [class*="Avatar"] img { filter: invert(1) hue-rotate(180deg); }
+  html.dk [class*="GridCard"] img { filter: invert(1) hue-rotate(180deg); }
 </style>
 </head>
 <body>
@@ -28,6 +108,15 @@
     }
   });
   CMS.registerPreviewTemplate('photos', PhotoPreview);
+
+  // light / dark button
+  (function () {
+    var b = document.createElement('button');
+    b.id = 'theme-toggle'; b.type = 'button'; b.title = 'Light / dark'; b.setAttribute('aria-label', 'Light / dark');
+    b.textContent = '◐';
+    b.onclick = function () { window.__setTheme(!document.documentElement.classList.contains('dk')); };
+    document.body.appendChild(b);
+  })();
 </script>
 </body>
 </html>
