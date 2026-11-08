@@ -155,6 +155,48 @@
   });
   CMS.registerPreviewTemplate('photos', PhotoPreview);
 
+  // Category page: the right-hand side lists the photos of this category (click one to open and edit it)
+  var photoCache = null;
+  function loadPhotos() {
+    if (photoCache) return photoCache;
+    var tok = '';
+    try { tok = JSON.parse(localStorage.getItem('decap-cms-user')).token; } catch (e) {}
+    var api = 'https://api.github.com/repos/shotbyjavad/photography-source/contents/content/photos';
+    var hdr = { Authorization: 'token ' + tok };
+    photoCache = fetch(api + '?ref=main', { headers: hdr }).then(function (r) { return r.json(); }).then(function (files) {
+      return Promise.all(files.filter(function (f) { return /\.ya?ml$/.test(f.name); }).map(function (f) {
+        return fetch(f.url, { headers: { Authorization: 'token ' + tok, Accept: 'application/vnd.github.raw' } })
+          .then(function (r) { return r.text(); }).then(function (t) {
+            var g = function (k) { var m = new RegExp('^' + k + ':\\s*(.*)$', 'm').exec(t); return m ? m[1].trim().replace(/^["\']|["\']$/g, '') : ''; };
+            var also = []; var am = /^also_in:\s*\n((?:\s*-\s*.*\n?)+)/m.exec(t);
+            if (am) am[1].split('\n').forEach(function (l) { var x = /-\s*(.+)/.exec(l); if (x) also.push(x[1].trim()); });
+            return { stem: f.name.replace(/\.ya?ml$/, ''), title: g('title'), category: g('category'), also: also, hidden: g('hidden') === 'true' };
+          });
+      }));
+    }).catch(function () { photoCache = null; return []; });
+    return photoCache;
+  }
+  var CategoryPreview = createClass({
+    getInitialState: function () { return { photos: null }; },
+    componentDidMount: function () { var self = this; loadPhotos().then(function (p) { self.setState({ photos: p }); }); },
+    render: function () {
+      var key = this.props.entry.get('slug');
+      var list = (this.state.photos || []).filter(function (p) { return p.category === key || p.also.indexOf(key) !== -1; });
+      return h('div', { style: { fontFamily: 'system-ui, sans-serif', padding: '20px' } },
+        h('h2', { style: { margin: '0 0 4px' } }, this.props.entry.getIn(['data', 'title']) || key),
+        h('p', { style: { color: '#666', margin: '0 0 16px' } },
+          this.state.photos === null ? 'Loading photos…' : list.length + ' photo' + (list.length === 1 ? '' : 's') + ' in this category'),
+        h('ul', { style: { listStyle: 'none', padding: 0, margin: 0 } }, list.map(function (p) {
+          return h('li', { key: p.stem, style: { padding: '10px 0', borderBottom: '1px solid #ddd' } },
+            h('a', { href: '#/collections/photos/entries/' + p.stem, target: '_top', style: { color: '#2f6fed', fontWeight: 600, textDecoration: 'none' } }, p.title || p.stem),
+            p.category !== key ? h('span', { style: { color: '#888' } }, '  (also in)') : null,
+            p.hidden ? h('span', { style: { color: '#888' } }, '  (hidden)') : null);
+        })),
+        h('p', { style: { color: '#888', fontSize: '13px', marginTop: '16px' } }, 'To remove a photo from this category: open it and change its Category.'));
+    }
+  });
+  CMS.registerPreviewTemplate('categories', CategoryPreview);
+
   // light / dark button
   (function () {
     var b = document.createElement('button');
