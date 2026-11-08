@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Admin</title>
+<style>
+  /* Persian and English text both look right: each field takes the direction of its first letter */
+  input[type="text"], input:not([type]), textarea, [contenteditable] { unicode-bidi: plaintext; text-align: start; }
+  textarea { line-height: 1.7; }
+</style>
+</head>
+<body>
+<script src="https://unpkg.com/decap-cms@3.16.3/dist/decap-cms.js"></script>
+<script>
+  // Simple live preview for a photo (image + title + text)
+  var PhotoPreview = createClass({
+    render: function () {
+      var entry = this.props.entry, src = '';
+      try { src = String(this.props.getAsset(entry.getIn(['data', 'image']))); } catch (e) {}
+      return h('div', { style: { fontFamily: 'system-ui, sans-serif', padding: '16px', maxWidth: '900px' } },
+        src ? h('img', { src: src, style: { width: '100%', height: 'auto', borderRadius: '4px', display: 'block' } }) : null,
+        h('h1', { style: { margin: '16px 0 4px' } }, entry.getIn(['data', 'title']) || ''),
+        h('p', { style: { color: '#666', margin: '0 0 12px' } },
+          [entry.getIn(['data', 'location']), entry.getIn(['data', 'category'])].filter(Boolean).join(' · ')),
+        h('p', { style: { whiteSpace: 'pre-wrap', lineHeight: 1.7 } }, entry.getIn(['data', 'description']) || ''));
+    }
+  });
+  CMS.registerPreviewTemplate('photos', PhotoPreview);
+</script>
+</body>
+</html>

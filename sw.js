@@ -1,4 +1,4 @@
-const CACHE = 'gallery-5b41a98dc161';
+const CACHE = 'gallery-bda0d25baef8';
 const ASSETS = [".nojekyll", "about/", "assets/app.js", "assets/apple-touch-icon.png", "assets/favicon-32.png", "assets/icon-192.png", "assets/icon-512.png", "assets/logo.png", "assets/og-default.jpg", "assets/style.css", "categories/", "category/animal/", "category/architecture/", "category/cities/", "category/nature/", "category/night-sky/", "img/dannie-the-turtle-35627048ba-640.webp", "img/holy-bethlehem-church-881ed084dd-640.webp", "img/mazichal-trees-f6c8ee6c79-640.webp", "img/nasir-al-molk-mosque-9ee34aaef0-640.webp", "img/shapori-house-b92262915d-640.webp", "img/sheikh-lotfollah-mosque-in-night-e8a4f4b3bb-640.webp", "img/sheikh-lotfollah-mosque-in-rainy-day-7eb5ca338b-640.webp", "img/zayande-rod-25cfcaaf8d-640.webp", "", "location/isfahan-iran/", "location/lahijan-iran/", "location/mazichal-iran/", "location/shiraz-iran/", "locations/", "manifest.webmanifest", "photo/dannie-the-turtle/", "photo/holy-bethlehem-church/", "photo/mazichal-trees/", "photo/nasir-al-molk-mosque/", "photo/shapori-house/", "photo/sheikh-lotfollah-mosque-in-night/", "photo/sheikh-lotfollah-mosque-in-rainy-day/", "photo/zayande-rod/", "photos/", "search/", "search.json", "tag/animal/", "tag/architecture/", "tag/ceiling/", "tag/iran/", "tag/landscape/", "tag/mosque/", "tag/nature/", "tag/night/", "tag/river/", "tag/travel/", "tag/trees/", "tags/"];
 
 self.addEventListener('install', (e) => {
@@ -41,5 +41,6 @@ self.addEventListener('fetch', (e) => {
   const req = e.request;
   const url = new URL(req.url);
   if (req.method !== 'GET' || url.origin !== location.origin) return;
+  if (url.pathname.indexOf('/admin/') !== -1) return;  // the web admin is never cached
   e.respondWith(/\/img\//.test(url.pathname) ? fromCache(req) : fromNetwork(req));
 });

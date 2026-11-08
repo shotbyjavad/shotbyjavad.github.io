@@ -1,0 +1,158 @@
+# Web admin (Decap CMS) for the photo site. Opens at  https://shotbyjavad.github.io/admin/
+# Works the same on phone and PC. Every Save = one commit in the source repo; GitHub Actions then
+# rebuilds and publishes the site (about 1-2 minutes).
+#
+# Setup (one time): see SETUP-CMS-fa.html. After deploying the login Worker, put its address in base_url.
+
+backend:
+  name: github
+  repo: shotbyjavad/photography-source
+  branch: main
+  base_url: https://shotbyjavad-cms-auth.shotbyjavad.workers.dev
+  auth_endpoint: auth
+
+site_url: https://shotbyjavad.github.io
+display_url: https://shotbyjavad.github.io
+publish_mode: simple                     # Save = publish (no drafts/pull requests)
+media_folder: uploads                    # original photos go to uploads/ in the repo
+public_folder: /uploads
+
+commit_messages:
+  create: 'Admin: add {{collection}} "{{slug}}"'
+  update: 'Admin: edit {{collection}} "{{slug}}"'
+  delete: 'Admin: delete {{collection}} "{{slug}}"'
+  uploadMedia: 'Admin: upload "{{path}}"'
+  deleteMedia: 'Admin: delete "{{path}}"'
+
+collections:
+  # ------------------------------------------------------------------ photos
+  - name: photos
+    label: "Photos"
+    label_singular: "Photo"
+    folder: content/photos
+    extension: yml
+    format: yaml
+    create: true
+    delete: true
+    identifier_field: title
+    summary: "{{title}} - {{category}}"
+    sortable_fields: [title, date]
+    view_groups:
+      - label: "Category"
+        field: category
+    fields:
+      - {label: "Image", name: image, widget: image, choose_url: false, hint: "Pick the original file. The site makes the small versions itself."}
+      - {label: "Title", name: title, widget: string}
+      - {label: "Category", name: category, widget: relation, collection: categories, search_fields: [title], value_field: "{{slug}}", display_fields: [title]}
+      - {label: "Also in (other categories)", name: also_in, widget: relation, collection: categories, search_fields: [title], value_field: "{{slug}}", display_fields: [title], multiple: true, required: false, hint: "The photo is shown in these categories too."}
+      - {label: "Location", name: location, widget: string, required: false, hint: "For example: Isfahan, Iran"}
+      - {label: "Tags", name: tags, widget: list, required: false, field: {label: Tag, name: tag, widget: string}}
+      - {label: "Description", name: description, widget: text, required: false, hint: "Blank line = new paragraph. Link: [text](https://...)"}
+      - {label: "Date", name: date, widget: datetime, format: "YYYY-MM-DD HH:mm:ss", date_format: "YYYY-MM-DD", time_format: "HH:mm", required: false, hint: "Empty = the date stored in the photo (EXIF)."}
+      - {label: "Featured (show on the home page)", name: featured, widget: boolean, default: false}
+      - {label: "Hidden", name: hidden, widget: boolean, default: false, hint: "The page exists but is not listed, not searchable and not in the sitemap."}
+      - {label: "URL name (slug)", name: slug, widget: string, required: false, hint: "English letters and dashes. Empty = made from the file name. Do not change it after publishing."}
+      - {label: "Alt text (image description)", name: alt, widget: string, required: false}
+      - {label: "Show location", name: show_location, widget: boolean, default: true}
+      - {label: "Show date", name: show_date, widget: boolean, default: true}
+      - {label: "Show camera info box", name: show_exif, widget: boolean, default: true}
+      - label: "Camera info (manual)"
+        name: camera_info
+        widget: object
+        collapsed: true
+        required: false
+        hint: "Only needed when the file has no EXIF. Anything written here replaces the EXIF."
+        fields:
+          - {label: Camera, name: camera, widget: string, required: false}
+          - {label: Lens, name: lens, widget: string, required: false}
+          - {label: "Focal length", name: focal, widget: string, required: false, hint: "35mm"}
+          - {label: Aperture, name: aperture, widget: string, required: false, hint: "f/2.8"}
+          - {label: Shutter, name: shutter, widget: string, required: false, hint: "1/250s"}
+          - {label: ISO, name: iso, widget: string, required: false, hint: "ISO 400"}
+      - label: "Links to this photo elsewhere (View on)"
+        name: links
+        widget: object
+        collapsed: true
+        required: false
+        hint: "Full address of the post/page of this same photo."
+        fields:
+          - {label: Instagram, name: instagram, widget: string, required: false}
+          - {label: X, name: x, widget: string, required: false}
+          - {label: Flickr, name: flickr, widget: string, required: false}
+          - {label: 500px, name: 500px, widget: string, required: false}
+          - {label: Behance, name: behance, widget: string, required: false}
+          - {label: VSCO, name: vsco, widget: string, required: false}
+          - {label: Unsplash, name: unsplash, widget: string, required: false}
+          - {label: Pinterest, name: pinterest, widget: string, required: false}
+          - {label: Threads, name: threads, widget: string, required: false}
+          - {label: Facebook, name: facebook, widget: string, required: false}
+          - {label: TikTok, name: tiktok, widget: string, required: false}
+          - {label: YouTube, name: youtube, widget: string, required: false}
+      - {label: "Related photos", name: related, widget: relation, collection: photos, search_fields: [title], value_field: "{{slug}}", display_fields: [title], multiple: true, required: false, hint: "Empty = automatic, based on tags and location."}
+      - {label: "Credit", name: credit, widget: string, required: false}
+      - {label: "License", name: license, widget: string, required: false, hint: "For example: CC BY 4.0"}
+
+  # -------------------------------------------------------------- categories
+  - name: categories
+    label: "Categories"
+    label_singular: "Category"
+    folder: content/categories
+    extension: yml
+    format: yaml
+    create: true
+    delete: true
+    identifier_field: title
+    summary: "{{title}}"
+    fields:
+      - {label: "Title", name: title, widget: string}
+      - {label: "Description", name: description, widget: text, required: false}
+      - {label: "Cover photo", name: cover, widget: relation, collection: photos, search_fields: [title], value_field: "{{slug}}", display_fields: [title], required: false, hint: "Empty = the newest photo of the category."}
+
+  # ----------------------------------------------------------------- settings
+  - name: settings
+    label: "Site settings"
+    files:
+      - label: "Site settings"
+        name: site
+        file: content/settings.yml
+        fields:
+          - {label: "Name", name: name, widget: string}
+          - {label: "Short name (under the phone app icon)", name: short_name, widget: string, required: false}
+          - {label: "Title (browser tab / Google)", name: title, widget: string, required: false}
+          - {label: "Tagline", name: tagline, widget: string, required: false}
+          - {label: "Bio (About page)", name: bio, widget: text, required: false}
+          - {label: "Site URL", name: url, widget: string, required: false}
+          - {label: "Photos on the home page", name: home_count, widget: number, value_type: int, min: 1, required: false}
+          - {label: "Photos per page", name: per_page, widget: number, value_type: int, min: 1, required: false}
+          - {label: "Show name next to the logo", name: show_name, widget: boolean, default: false}
+          - {label: "Keep full-size photos offline", name: offline_full, widget: boolean, default: false}
+          - label: "Social profiles (username or full URL)"
+            name: social
+            widget: object
+            collapsed: true
+            required: false
+            fields:
+              - {label: Instagram, name: instagram, widget: string, required: false}
+              - {label: X, name: x, widget: string, required: false}
+              - {label: Telegram, name: telegram, widget: string, required: false}
+              - {label: TikTok, name: tiktok, widget: string, required: false}
+              - {label: Snapchat, name: snapchat, widget: string, required: false}
+              - {label: YouTube, name: youtube, widget: string, required: false}
+              - {label: Flickr, name: flickr, widget: string, required: false}
+              - {label: Unsplash, name: unsplash, widget: string, required: false}
+              - {label: VSCO, name: vsco, widget: string, required: false}
+              - {label: Behance, name: behance, widget: string, required: false}
+              - {label: 500px, name: 500px, widget: string, required: false}
+              - {label: GitHub, name: github, widget: string, required: false}
+              - {label: Facebook, name: facebook, widget: string, required: false}
+              - {label: Threads, name: threads, widget: string, required: false}
+              - {label: Pinterest, name: pinterest, widget: string, required: false}
+              - {label: LinkedIn, name: linkedin, widget: string, required: false}
+              - {label: Email, name: email, widget: string, required: false}
+              - {label: Website, name: website, widget: string, required: false}
+          - {label: "Icons at the top of every page", name: social_header, widget: select, multiple: true, required: false, options: &nets [instagram, x, telegram, tiktok, snapchat, youtube, flickr, unsplash, vsco, behance, 500px, github, facebook, threads, pinterest, linkedin, email, website]}
+          - {label: "Icons in the footer", name: social_footer, widget: select, multiple: true, required: false, options: *nets}
+          - {label: "Links on the About page", name: social_about, widget: select, multiple: true, required: false, options: *nets}
+          - {label: "Share menu on each photo", name: share, widget: select, multiple: true, required: false, options: [x, facebook, whatsapp, telegram, linkedin, pinterest, reddit, email]}
+          - {label: "Statistics: Cloudflare Web Analytics token", name: analytics_cloudflare, widget: string, required: false, hint: "From Cloudflare dashboard > Web Analytics. Empty = off."}
+          - {label: "Statistics: GoatCounter code", name: analytics_goatcounter, widget: string, required: false, hint: "The first part of CODE.goatcounter.com. Empty = off."}
