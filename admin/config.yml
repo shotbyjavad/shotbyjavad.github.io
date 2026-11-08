@@ -42,6 +42,14 @@ collections:
     view_groups:
       - label: "Category"
         field: category
+    view_filters:
+      - {label: "Animal", field: category, pattern: "^animal$"}
+      - {label: "Architecture", field: category, pattern: "^architecture$"}
+      - {label: "Cities", field: category, pattern: "^city$"}
+      - {label: "Nature", field: category, pattern: "^nature$"}
+      - {label: "Night Sky", field: category, pattern: "^night-sky$"}
+      - {label: "Hidden photos", field: hidden, pattern: true}
+      - {label: "Featured photos", field: featured, pattern: true}
     fields:
       - {label: "Image", name: image, widget: image, choose_url: false, hint: "Pick the original file. The site makes the small versions itself."}
       - {label: "Title", name: title, widget: string}
