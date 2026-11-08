@@ -22,7 +22,7 @@ site_url: https://shotbyjavad.github.io
 display_url: https://shotbyjavad.github.io
 publish_mode: simple                     # Save = publish (no drafts/pull requests)
 media_folder: uploads                    # original photos go to uploads/ in the repo
-public_folder: /uploads
+public_folder: uploads
 
 
 collections:

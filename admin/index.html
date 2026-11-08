@@ -68,7 +68,8 @@
   [class*="CardBody"] { padding: 12px 14px 14px !important; }
   [class*="CardHeading"] { font-size: 15px !important; font-weight: 600; color: var(--text) !important; line-height: 1.5; }
   /* list view */
-  [class*="ListCard-"] { background: var(--card) !important; border: 1px solid var(--line); border-radius: 12px !important; box-shadow: none !important; margin-bottom: 8px !important; }
+  [class*="CardsGrid"]:has([class*="ListCard-"]) { display: block !important; }
+  [class*="ListCard-"] { width: auto !important; overflow: hidden; background: var(--card) !important; border: 1px solid var(--line); border-radius: 12px !important; box-shadow: none !important; margin-bottom: 8px !important; }
   [class*="NoEntriesMessage"] { color: var(--muted); }
 
   /* ================= editor ================= */
