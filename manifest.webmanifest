@@ -1,7 +1,7 @@
 {
- "name": "ShotByJavad",
+ "name": "Javad",
  "short_name": "ShotByJavad",
- "description": "Photography, places and quiet moments.",
+ "description": "I photograph to calm myself",
  "start_url": "./",
  "scope": "./",
  "display": "standalone",
