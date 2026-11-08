@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
 <script>
+  try { if (!localStorage.getItem('decap-cms.entries.viewStyle')) localStorage.setItem('decap-cms.entries.viewStyle', 'VIEW_STYLE_GRID'); } catch (e) {}
   // Light / dark: follows the device, and the round button (bottom corner) overrides it.
   (function () {
     var saved = null;
@@ -22,8 +23,13 @@
   })();
 </script>
 <style>
-  :root { --bg: #f3f5f9; --card: #ffffff; --line: #dfe3ec; --text: #1c2230; --muted: #667085; --accent: #2f6fed; --accent-soft: #e8f0ff; }
-  html { background: var(--bg); }
+  :root {
+    --bg: #eef1f7; --card: #ffffff; --soft: #f6f8fc; --line: #e1e5ee; --text: #1b2230; --muted: #667085;
+    --accent: #2f6fed; --accent-soft: #e8f0ff;
+    --shadow: 0 1px 2px rgba(16,24,40,.05), 0 8px 24px rgba(16,24,40,.06); --r: 16px;
+  }
+  html, body { background: var(--bg); }
+  #nc-root { min-height: 100vh; background: var(--bg); color: var(--text); }
   #nc-root, #nc-root input, #nc-root textarea, #nc-root button, #nc-root select {
     font-family: "Inter", "Vazirmatn", system-ui, -apple-system, "Segoe UI", Tahoma, sans-serif;
   }
@@ -31,64 +37,103 @@
   input[type="text"], input:not([type]), textarea, [contenteditable] { unicode-bidi: plaintext; text-align: start; }
   textarea { line-height: 1.7; }
 
-  /* ---- layout and surfaces ---- */
-  [class*="AppMainContainer"] { background: var(--bg); }
-  [class*="ToolbarContainer"] { background: var(--card); border-bottom: 1px solid var(--line); box-shadow: none; }
-  [class*="AppHeaderContainer"], [class*="AppHeader-"], header[class*="AppHeader"] { background: var(--card); box-shadow: 0 1px 0 var(--line); }
-  [class*="SidebarContainer"] { background: var(--card); border: 1px solid var(--line); border-radius: 14px; box-shadow: none; }
-  [class*="ControlPaneContainer"] { background: var(--bg); }
-  [class*="ControlContainer"] { margin-bottom: 20px; }
-  [class*="ListCard"], [class*="GridCard"], [class*="CardsGrid"] > div, [class*="CollectionTopRow"] { border-radius: 14px; }
-  [class*="GridCard"], [class*="ListCard"] { background: var(--card); border: 1px solid var(--line); box-shadow: none; overflow: hidden; }
-  [class*="NoPreviewContainer"] { background: var(--card); border-radius: 14px; }
+  /* ================= top bar ================= */
+  [class*="AppHeader-css"] { background: var(--card) !important; border-bottom: 1px solid var(--line); box-shadow: none !important; }
+  [class*="AppHeaderContent"] { max-width: 1280px; margin: 0 auto; }
+  [class*="AppHeaderNavLink"] { border-radius: 999px !important; padding: 8px 18px !important; font-weight: 600; margin: 8px 4px; }
+  [class*="AppHeaderNavLink"][class*="buttonActive"] { background: var(--accent-soft) !important; color: var(--accent) !important; }
+  [class*="AppHeaderQuickNewButton"] { background: var(--accent) !important; color: #fff !important; border-radius: 999px !important; font-weight: 600; padding-inline: 18px; }
+  [class*="AppHeaderSiteLink"], [class*="AppHeaderTestRepoIndicator"] { color: var(--muted); font-size: 13px; }
 
-  /* ---- labels and fields ---- */
+  /* ================= collections page ================= */
+  [class*="CollectionContainer"] { max-width: 1280px; margin: 0 auto; padding: 24px 24px 60px; }
+  [class*="SidebarContainer"] { background: var(--card) !important; border: 1px solid var(--line); border-radius: var(--r) !important; box-shadow: var(--shadow) !important; padding: 8px 6px 12px; }
+  [class*="SidebarHeading"] { font-size: 13px !important; text-transform: uppercase; letter-spacing: .08em; color: var(--muted) !important; padding: 12px 14px 6px !important; }
+  [class*="SidebarNavLink"] { border-radius: 10px !important; margin: 2px 6px !important; padding: 9px 12px !important; border-inline-start: 0 !important; font-weight: 500; }
+  [class*="SidebarNavLink"].sidebar-active { background: var(--accent-soft) !important; color: var(--accent) !important; font-weight: 600; }
+  [class*="CollectionMain"] { padding-inline-start: 24px; }
+  [class*="CollectionTopContainer"] { background: var(--card) !important; border: 1px solid var(--line); border-radius: var(--r) !important; box-shadow: var(--shadow) !important; padding: 8px 12px; }
+  [class*="CollectionTopHeading"] { font-size: 26px !important; font-weight: 700; color: var(--text) !important; }
+  [class*="CollectionTopNewButton"] { background: var(--accent) !important; color: #fff !important; border-radius: 999px !important; font-weight: 600; padding-inline: 20px; }
+  [class*="CollectionControlsContainer"] { color: var(--muted); margin: 14px 4px 10px; }
+
+  /* photo grid */
+  [class*="CardsGrid"] { display: grid !important; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 18px; padding: 0; margin: 8px 0 0; }
+  [class*="GridCard-"] {
+    width: auto !important; margin: 0 !important; border-radius: var(--r) !important; overflow: hidden; background: var(--card) !important;
+    border: 1px solid var(--line); box-shadow: var(--shadow) !important; transition: transform .15s ease, box-shadow .15s ease;
+  }
+  [class*="GridCard-"]:hover { transform: translateY(-3px); box-shadow: 0 2px 4px rgba(16,24,40,.06), 0 16px 32px rgba(16,24,40,.12) !important; }
+  [class*="StyledImage"] { height: 170px !important; background-size: cover !important; background-position: center !important; }
+  [class*="CardBody"] { padding: 12px 14px 14px !important; }
+  [class*="CardHeading"] { font-size: 15px !important; font-weight: 600; color: var(--text) !important; line-height: 1.5; }
+  /* list view */
+  [class*="ListCard-"] { background: var(--card) !important; border: 1px solid var(--line); border-radius: 12px !important; box-shadow: none !important; margin-bottom: 8px !important; }
+  [class*="NoEntriesMessage"] { color: var(--muted); }
+
+  /* ================= editor ================= */
+  [class*="EditorContainer"], [class*="ToolbarContainer"], [class*="AppMainContainer"] { min-width: 0 !important; }
+  [class*="ToolbarContainer"] { background: var(--card) !important; border-bottom: 1px solid var(--line); box-shadow: none !important; }
+  [class*="PublishButton"], [class*="StyledDropdownButton"][class*="PublishButton"] {
+    background: var(--accent) !important; color: #fff !important; border-radius: 999px !important; font-weight: 600; padding-inline: 20px;
+  }
+  [class*="BackStatus"] { border-radius: 999px; }
+  [class*="ControlPaneContainer"] { background: var(--bg) !important; }
+  [class*="ControlPaneContainer"] > div { max-width: 780px; margin-inline: auto; }
+  [class*="ControlContainer"] {
+    background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px 14px; margin-bottom: 14px; box-shadow: var(--shadow);
+  }
+  [class*="ControlContainer"] [class*="ControlContainer"] { background: transparent; border: 0; box-shadow: none; padding: 0; margin-bottom: 12px; }
   [class*="FieldLabel"] {
-    background: transparent !important; color: var(--muted) !important; padding: 0 2px 6px !important;
-    font-size: 12px; font-weight: 600; text-transform: none; letter-spacing: .02em; border-radius: 0 !important;
+    background: transparent !important; color: var(--muted) !important; padding: 0 0 6px !important;
+    font-size: 13px; font-weight: 600; text-transform: none; letter-spacing: 0; border-radius: 0 !important;
   }
   [class*="ControlHint"] { color: var(--muted); font-size: 12.5px; line-height: 1.7; }
-  #nc-root input[type="text"], #nc-root input[type="number"], #nc-root input:not([type]), #nc-root textarea,
-  [class*="-control"] {
-    background: var(--card); color: var(--text); border: 1px solid var(--line) !important; border-radius: 10px !important;
+  #nc-root input[type="text"], #nc-root input[type="number"], #nc-root input:not([type]), #nc-root textarea, [class*="-control"] {
+    background: var(--soft); color: var(--text); border: 1px solid var(--line) !important; border-radius: 12px !important;
     box-shadow: none; padding-inline: 14px; transition: border-color .15s, box-shadow .15s;
   }
   #nc-root input:focus, #nc-root textarea:focus, [class*="-control"]:focus-within {
-    border-color: var(--accent) !important; box-shadow: 0 0 0 3px var(--accent-soft) !important; outline: none;
-  }
-
-  /* ---- buttons ---- */
-  [class*="PublishButton"], [class*="button-default"][class*="PublishButton"],
-  [class*="StyledDropdownButton"][class*="PublishButton"] {
-    background: var(--accent) !important; color: #fff !important; border-radius: 10px !important; font-weight: 600;
+    border-color: var(--accent) !important; box-shadow: 0 0 0 3px var(--accent-soft) !important; outline: none; background: var(--card);
   }
   [class*="FileWidgetButton"], [class*="AddButton"], [class*="button-widget"] {
-    background: var(--accent-soft) !important; color: var(--accent) !important; border-radius: 8px !important; font-weight: 600;
+    background: var(--accent-soft) !important; color: var(--accent) !important; border-radius: 999px !important; font-weight: 600;
   }
   [class*="ButtonRound"] { background: var(--card); border: 1px solid var(--line); box-shadow: none; }
-  [class*="BackStatus"] { border-radius: 999px; }
+  [class*="NoPreviewContainer"] { background: var(--card); border-radius: var(--r); }
 
-  /* ---- phone: Decap forces an 800px minimum width; remove it ---- */
-  [class*="EditorContainer"], [class*="ToolbarContainer"], [class*="AppMainContainer"] { min-width: 0 !important; }
-  @media (max-width: 700px) {
-    [class*="AppHeaderSiteLink"], [class*="ToolbarSectionMeta"] [class*="SettingsWrapper"] { display: none; }
-    [class*="BackCollection"] { display: none; }
+  /* ================= login page ================= */
+  [class*="StyledAuthenticationPage"] { background: linear-gradient(135deg, #e9f0ff 0%, #f4eefc 100%) !important; }
+  [class*="StyledAuthenticationPage"] button { background: var(--accent) !important; color: #fff !important; border-radius: 999px !important; font-weight: 600; padding: 10px 26px !important; }
+
+  /* ================= phone ================= */
+  @media (max-width: 800px) {
+    [class*="CollectionContainer"] { padding: 12px 12px 40px; flex-direction: column; }
+    [class*="CollectionMain"] { padding-inline-start: 0; padding-top: 12px; }
+    [class*="CardsGrid"] { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+    [class*="StyledImage"] { height: 120px !important; }
+    [class*="AppHeaderSiteLink"], [class*="ToolbarSectionMeta"] [class*="SettingsWrapper"], [class*="BackCollection"] { display: none; }
     [class*="ToolbarSectionBackLink"] { padding-inline: 12px; }
     [class*="ControlPaneContainer"] { padding-inline: 12px; }
-    [class*="CollectionTopRow"] { flex-wrap: wrap; gap: 8px; }
+    [class*="ControlContainer"] { padding: 14px; }
   }
 
-  /* ---- light / dark button (bottom corner) ---- */
+  /* ================= light / dark button (bottom corner) ================= */
   #theme-toggle {
     position: fixed; inset-block-end: 16px; inset-inline-end: 16px; z-index: 9999;
     width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--line); background: var(--card);
-    color: var(--text); font-size: 18px; line-height: 1; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,.15);
+    color: var(--text); font-size: 18px; line-height: 1; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,.18);
   }
 
-  /* ---- dark mode: the whole admin is inverted, then pictures are flipped back ---- */
-  html.dk { filter: invert(.93) hue-rotate(180deg); background: #0f1218; }
-  html.dk img, html.dk video, html.dk iframe, html.dk [class*="Avatar"] img { filter: invert(1) hue-rotate(180deg); }
-  html.dk [class*="GridCard"] img { filter: invert(1) hue-rotate(180deg); }
+  /* ================= dark mode =================
+     Decap has no theme variables, so the admin is inverted (and pictures flipped back). The page itself
+     keeps a native dark background, and pop-up windows (media library) are inverted too. */
+  html.dk, html.dk body { background: #1e222a; }
+  html.dk #nc-root, html.dk .ReactModal__Overlay { filter: invert(.93) hue-rotate(180deg); }
+  html.dk #nc-root img, html.dk #nc-root video, html.dk #nc-root iframe,
+  html.dk .ReactModal__Overlay img, html.dk .ReactModal__Overlay video,
+  html.dk [class*="StyledImage"] { filter: invert(1) hue-rotate(180deg); }
+  html.dk #theme-toggle { background: #262b36; color: #e8eaf0; border-color: #3a4152; }
 </style>
 </head>
 <body>

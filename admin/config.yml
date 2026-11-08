@@ -17,6 +17,7 @@ backend:
     uploadMedia: 'Admin: upload "{{path}}"'
     deleteMedia: 'Admin: delete "{{path}}"'
 
+logo_url: /assets/icon-192.png
 site_url: https://shotbyjavad.github.io
 display_url: https://shotbyjavad.github.io
 publish_mode: simple                     # Save = publish (no drafts/pull requests)
@@ -36,6 +37,7 @@ collections:
     delete: true
     identifier_field: title
     summary: "{{title}} - {{category}}"
+    thumbnail: image
     sortable_fields: [title, date]
     view_groups:
       - label: "Category"
