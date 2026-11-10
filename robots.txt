@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 Disallow: /admin/
-Sitemap: https://shotbyjavad.github.io/sitemap.xml
+Sitemap: https://shotbyjavad.ir/sitemap.xml
