@@ -2,8 +2,10 @@
   var root = document.documentElement.dataset.root || './';
 
   // e-mail links: the address is not in the HTML (anti-spam); join it here
-  document.querySelectorAll('a[data-u]').forEach(function (a) {
-    var m = a.dataset.u + '@' + a.dataset.d;
+  // (stored reversed + base64 in data-m; decoded only in a real browser)
+  document.querySelectorAll('a[data-m]').forEach(function (a) {
+    var m = '';
+    try { m = atob(a.dataset.m).split('').reverse().join(''); } catch (e) { return; }
     a.href = 'mailto:' + m;
     if (a.classList.contains('mail')) a.textContent = m;
   });
