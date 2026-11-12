@@ -1,4 +1,4 @@
-# Web admin (Decap CMS) for the photo site. Opens at  https://shotbyjavad.github.io/admin/
+# Web admin (Decap CMS) for the photo site. Opens at  https://shotbyjavad.ir/admin/
 # Works the same on phone and PC. Every Save = one commit in the source repo; GitHub Actions then
 # rebuilds and publishes the site (about 1-2 minutes).
 #
@@ -18,8 +18,8 @@ backend:
     deleteMedia: 'Admin: delete "{{path}}"'
 
 logo_url: /assets/icon-192.png
-site_url: https://shotbyjavad.github.io
-display_url: https://shotbyjavad.github.io
+site_url: https://shotbyjavad.ir
+display_url: https://shotbyjavad.ir
 publish_mode: simple                     # Save = publish (no drafts/pull requests)
 media_folder: uploads                    # original photos go to uploads/ in the repo
 public_folder: uploads
