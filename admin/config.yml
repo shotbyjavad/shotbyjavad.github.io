@@ -59,15 +59,15 @@ collections:
       - {label: "Tags", name: tags, widget: list, required: false, field: {label: Tag, name: tag, widget: string}}
       - {label: "Description", name: description, widget: text, required: false, hint: "Blank line = new paragraph. Link: [text](https://...)"}
       - {label: "Date", name: date, widget: datetime, format: "YYYY-MM-DD HH:mm:ss", date_format: "YYYY-MM-DD", time_format: "HH:mm", required: false, hint: "Empty = the date stored in the photo (EXIF)."}
-      - {label: "Featured (show on the home page)", name: featured, widget: boolean, default: false}
-      - {label: "Post to Telegram", name: telegram, widget: boolean, default: false, hint: "Tick it and Save: the photo is posted to your Telegram channel once, a minute or two after the site updates. Unticking later does not delete the post."}
-      - {label: "Telegram: include the website link", name: telegram_link, widget: boolean, default: true, hint: "Adds a 'See on website' link under the caption."}
-      - {label: "Hidden", name: hidden, widget: boolean, default: false, hint: "The page exists but is not listed, not searchable and not in the sitemap."}
+      - {label: "Featured (show on the home page)", name: featured, widget: boolean, required: false, default: false}
+      - {label: "Post to Telegram", name: telegram, widget: boolean, required: false, default: false, hint: "Tick it and Save: the photo is posted to your Telegram channel once, a minute or two after the site updates. Unticking later does not delete the post."}
+      - {label: "Telegram: include the website link", name: telegram_link, widget: boolean, required: false, default: true, hint: "Adds a 'See on website' link under the caption."}
+      - {label: "Hidden", name: hidden, widget: boolean, required: false, default: false, hint: "The page exists but is not listed, not searchable and not in the sitemap."}
       - {label: "URL name (slug)", name: slug, widget: string, required: false, hint: "English letters and dashes. Empty = made from the file name. Do not change it after publishing."}
       - {label: "Alt text (image description)", name: alt, widget: string, required: false}
-      - {label: "Show location", name: show_location, widget: boolean, default: true}
-      - {label: "Show date", name: show_date, widget: boolean, default: true}
-      - {label: "Show camera info box", name: show_exif, widget: boolean, default: true}
+      - {label: "Show location", name: show_location, widget: boolean, required: false, default: true}
+      - {label: "Show date", name: show_date, widget: boolean, required: false, default: true}
+      - {label: "Show camera info box", name: show_exif, widget: boolean, required: false, default: true}
       - label: "Camera info (manual)"
         name: camera_info
         widget: object
@@ -137,8 +137,8 @@ collections:
           - {label: "Site URL", name: url, widget: string, required: false}
           - {label: "Photos on the home page", name: home_count, widget: number, value_type: int, min: 1, required: false}
           - {label: "Photos per page", name: per_page, widget: number, value_type: int, min: 1, required: false}
-          - {label: "Show name next to the logo", name: show_name, widget: boolean, default: false}
-          - {label: "Keep full-size photos offline", name: offline_full, widget: boolean, default: false}
+          - {label: "Show name next to the logo", name: show_name, widget: boolean, required: false, default: false}
+          - {label: "Keep full-size photos offline", name: offline_full, widget: boolean, required: false, default: false}
           - label: "Social profiles (username or full URL)"
             name: social
             widget: object
